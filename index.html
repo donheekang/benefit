@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>보험사망금 계산기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        div {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>보험사망금 계산기</h1>
+    
+    <div id="samsung">
+        <h2>삼성생명</h2>
+        <input type="text" id="samsung-2020" placeholder="2020년 당기순이익">
+        <input type="text" id="samsung-2021" placeholder="2021년 당기순이익">
+        <input type="text" id="samsung-2022" placeholder="2022년 당기순이익">
+        <input type="number" id="samsung-share" placeholder="지분율 (%)">
+        <input type="number" id="samsung-age" placeholder="나이">
+        <button onclick="calculateSamsung()">계산하기</button>
+        <p id="samsung-result"></p>
+    </div>
+    
+    <div id="shinhan">
+        <h2>신한생명</h2>
+        <input type="text" id="shinhan-2020" placeholder="2020년 당기순이익">
+        <input type="text" id="shinhan-2021" placeholder="2021년 당기순이익">
+        <input type="text" id="shinhan-2022" placeholder="2022년 당기순이익">
+        <button onclick="calculateShinhan()">계산하기</button>
+        <p id="shinhan-result"></p>
+    </div>
+
+    <script>
+        function parseBillion(input) {
+            return parseFloat(input) * 100000000; // 입력된 '억'을 실제 숫자로 변환
+        }
+
+        function calculateSamsung() {
+            let profit2020 = parseBillion(document.getElementById('samsung-2020').value);
+            let profit2021 = parseBillion(document.getElementById('samsung-2021').value);
+            let profit2022 = parseBillion(document.getElementById('samsung-2022').value);
+            let share = parseFloat(document.getElementById('samsung-share').value) / 100;
+            let age = parseInt(document.getElementById('samsung-age').value);
+            let multiplier;
+
+            // 나이에 따른 배수 계산 수정
+            if (age <= 40) { // 40세 이하를 포함하여 25배로 계산
+                multiplier = 25;
+            } else if (age > 40 && age <= 56) { // 40세 초과, 56세 미만은 15배로 계산
+                multiplier = 15;
+            } else { // 56세 이상부터 10배로 계산
+                multiplier = 10;
+            }
+
+            let result = ((profit2020 * 0.2 + profit2021 * 0.3 + profit2022 * 0.5) * share * multiplier) / 100000000;
+            document.getElementById('samsung-result').innerText = `계산된 사망금액: ${result.toFixed(2)}억`;
+        }
+
+        function calculateShinhan() {
+            let profit2020 = parseBillion(document.getElementById('shinhan-2020').value);
+            let profit2021 = parseBillion(document.getElementById('shinhan-2021').value);
+            let profit2022 = parseBillion(document.getElementById('shinhan-2022').value);
+
+            let result = (((profit2020 + profit2021 + profit2022) / 3) / 100000000).toFixed(2);
+            document.getElementById('shinhan-result').innerText = `평균 당기순이익: ${result}억`;
+        }
+    </script>
+</body>
+</html>
